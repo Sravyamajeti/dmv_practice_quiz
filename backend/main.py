@@ -4,8 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from database import get_random_questions, get_question_by_id
+from mangum import Mangum
 
 app = FastAPI()
+handler = Mangum(app)
 
 # Configure CORS
 app.add_middleware(
