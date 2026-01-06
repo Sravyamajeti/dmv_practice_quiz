@@ -1,5 +1,11 @@
 import sys
 import os
+import random
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -8,8 +14,46 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from backend.database import get_random_questions, get_question_by_id
 from mangum import Mangum
+
+# Initialize Supabase client
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_KEY")
+
+if not url or not key:
+    raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in environment variables")
+
+supabase: Client = create_client(url, key)
+
+# Database helper functions
+def get_random_questions(limit: int = 10):
+    """Fetches random questions from the database."""
+    try:
+        response = supabase.table("questions").select("id").execute()
+        all_ids_data = response.data
+        all_ids = [item['id'] for item in all_ids_data]
+
+        if not all_ids:
+            return []
+
+        sample_size = min(len(all_ids), limit)
+        selected_ids = random.sample(all_ids, sample_size)
+        
+        response = supabase.table("questions").select("*").in_("id", selected_ids).execute()
+        return response.data
+
+    except Exception as e:
+        print(f"Error fetching random questions: {e}")
+        return []
+
+def get_question_by_id(question_id: str):
+    """Fetch a single question by its ID."""
+    try:
+        response = supabase.table("questions").select("*").eq("id", question_id).single().execute()
+        return response.data
+    except Exception as e:
+        print(f"Error fetching question {question_id}: {e}")
+        return None
 
 app = FastAPI()
 handler = Mangum(app)
@@ -34,34 +78,20 @@ async def read_index():
 
 @app.get("/api/start_quiz")
 def start_quiz():
-    """
-    Start a new quiz by fetching random question IDs from the database.
-    """
+    """Start a new quiz by fetching random question IDs from the database."""
     questions = get_random_questions(limit=10)
     if not questions:
         raise HTTPException(status_code=500, detail="No questions loaded or available")
     
-    # Return list of IDs
     return [q["id"] for q in questions]
 
 @app.get("/api/question/{question_id}")
 def get_question_details(question_id: str):
-    """
-    Get details for a specific question by ID.
-    """
+    """Get details for a specific question by ID."""
     question = get_question_by_id(question_id)
     
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
-    
-    # Map database keys to frontend expectation if necessary
-    # The frontend expects camelCase or specific keys? 
-    # Let's check the previous main.py structure.
-    # Previous structure:
-    # "id": ..., "question": ..., "options": {"A": ..., "B": ..., "C": ...}, "correctAnswer": ..., "explanation": ...
-    
-    # Database columns (based on plan schema):
-    # id, question, option_a, option_b, option_c, correct_answer, explanation
     
     formatted_question = {
         "id": question["id"],
