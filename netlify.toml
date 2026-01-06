@@ -5,9 +5,8 @@
 # Redirect API requests to the FastAPI backend (main.py)
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/main/api/:splat"
+  to = "/.netlify/functions/main"
   status = 200
-  force = true
 
 # Redirect static asset requests to the root (since we publish 'frontend')
 # Local: /static/style.css -> Netlify: /style.css
