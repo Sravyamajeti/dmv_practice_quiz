@@ -1,9 +1,14 @@
+import sys
+import os
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-import os
-from .database import get_random_questions, get_question_by_id
+from backend.database import get_random_questions, get_question_by_id
 from mangum import Mangum
 
 app = FastAPI()
