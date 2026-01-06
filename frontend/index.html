@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- This tells the browser that this is an HTML5 document. -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- This makes sure the page looks good on mobile devices. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMV Quiz</title>
+    <!-- This links our CSS file, which handles the styling (colors, fonts, layout). -->
+    <link rel="stylesheet" href="/static/style.css?v=3">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>DMV Practice Quiz</h1>
+        </header>
+
+        <!-- The main container for the quiz content. -->
+        <main id="quiz-container">
+            <!-- 
+                We have three main screens: Start, Question, and Result.
+                We use JavaScript to show one and hide the others.
+            -->
+
+            <!-- 1. Start Screen: Shown when the page loads. -->
+            <div id="start-screen">
+                <p>Test your knowledge with 10 questions.</p>
+                <button id="start-btn" class="btn primary">Start Quiz</button>
+            </div>
+
+            <!-- 2. Question Screen: Shown while taking the quiz. Initially hidden. -->
+            <div id="question-screen" class="hidden">
+                <div class="progress-bar">
+                    <div id="progress-fill"></div>
+                </div>
+                <div class="question-header">
+                    <span id="question-number">Question 1/10</span>
+                    <span id="score-display">Score: Hidden</span>
+                </div>
+                <h2 id="question-text">Question goes here...</h2>
+                <div id="options-container" class="options-grid">
+                    <!-- The answer buttons (A, B, C) will be inserted here by JavaScript. -->
+                </div>
+                <!-- Navigation section: Shown after answering a question. -->
+                <div id="navigation-area" class="hidden">
+                    <button id="next-btn" class="btn secondary">Next Question</button>
+                </div>
+            </div>
+
+            <!-- 3. Result Screen: Shown after finishing the quiz. Initially hidden. -->
+            <div id="result-screen" class="hidden">
+                <h2>Quiz Completed!</h2>
+                <p>Your Score: <span id="final-score">0</span> / 10</p>
+                <p id="result-message"></p>
+
+                <!-- Container for the detailed breakdown of all questions -->
+                <div id="results-summary" class="results-summary">
+                    <!-- JavaScript will populate this with question details and explanations -->
+                </div>
+
+                <button id="restart-btn" class="btn primary">Try Again</button>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p class="disclaimer">
+            Disclaimer: This website is not affiliated with or endorsed by the Department of Motor Vehicles (DMV).
+            The quiz is for practice and educational purposes only and is not an official DMV test.
+        </p>
+    </footer>
+
+    <!-- This links our JavaScript file, which handles the logic (fetching questions, checking answers). -->
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

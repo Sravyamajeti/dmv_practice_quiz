@@ -1,0 +1,329 @@
+/* :root defines variables that we can use throughout our CSS. 
+   This makes it easy to change colors or spacing in one place and have it update everywhere. */
+:root {
+    --primary-color: #2563eb;
+    /* A nice blue color for main buttons and headers */
+    --primary-hover: #1d4ed8;
+    /* A darker blue for when you hover over buttons */
+    --secondary-color: #475569;
+    /* A grey color for secondary text */
+    --background-color: #e0f7fa;
+    /* A very light grey for the page background */
+    --card-background: #ffffff;
+    /* White background for the quiz box */
+    --text-color: #1e293b;
+    /* Dark grey for main text */
+    --success-color: #10b981;
+    /* Green for correct answers */
+    --error-color: #ef4444;
+    /* Red for wrong answers */
+    --border-radius: 12px;
+    /* How rounded the corners of boxes are */
+    --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    /* A subtle shadow effect */
+}
+
+/* The asterisk (*) selects EVERYTHING on the page. 
+   We use it to reset some default browser styles so our layout is consistent. */
+* {
+    box-sizing: border-box;
+    /* Ensures padding doesn't make elements wider than we expect */
+    margin: 0;
+    padding: 0;
+}
+
+/* Styles for the main body of the page */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* We use Flexbox to center the content on the screen */
+    min-height: 100vh;
+    /* Make sure the body takes up at least the full height of the screen */
+    padding: 20px;
+}
+
+/* The container holds all our quiz content */
+.container {
+    width: 100%;
+    max-width: 600px;
+    /* Don't let it get too wide on big screens */
+    margin-top: 40px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* The main box where the quiz happens */
+#quiz-container {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* A utility class to hide elements. We use JavaScript to add/remove this class. */
+.hidden {
+    display: none !important;
+}
+
+/* General button styles */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* Smoothly animate changes (like hover effects) */
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Primary button style (blue) */
+.btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn.primary:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Secondary button style (grey) */
+.btn.secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn.secondary:hover {
+    background-color: #334155;
+}
+
+/* Progress Bar styles */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* The colored part of the progress bar that grows */
+#progress-fill {
+    height: 100%;
+    background-color: var(--primary-color);
+    width: 0%;
+    /* Starts at 0 width, JavaScript changes this */
+    transition: width 0.3s ease;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+h2#question-text {
+    font-size: 1.25rem;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* Space between options */
+}
+
+/* Styles for the answer buttons */
+.option-btn {
+    padding: 16px;
+    text-align: left;
+    background-color: #f1f5f9;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    color: var(--text-color);
+}
+
+.option-btn:hover:not(:disabled) {
+    background-color: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+.option-btn.selected {
+    border-color: var(--primary-color);
+    background-color: #eff6ff;
+}
+
+/* Styles for correct answers */
+.option-btn.correct {
+    background-color: #dcfce7;
+    border-color: var(--success-color);
+    color: #065f46;
+}
+
+/* Styles for wrong answers */
+.option-btn.wrong {
+    background-color: #fee2e2;
+    border-color: var(--error-color);
+    color: #991b1b;
+}
+
+/* Feedback section styles (kept for reference, but mostly unused now) */
+#feedback {
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    animation: fadeIn 0.3s ease;
+}
+
+#feedback-text {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+#feedback-text.correct {
+    color: var(--success-color);
+}
+
+#feedback-text.wrong {
+    color: var(--error-color);
+}
+
+#explanation-text {
+    font-size: 0.95rem;
+    color: var(--secondary-color);
+}
+
+/* Navigation Area */
+#navigation-area {
+    margin-top: 24px;
+}
+
+#result-screen {
+    text-align: center;
+}
+
+#result-screen h2 {
+    margin-bottom: 16px;
+}
+
+#final-score {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Results Summary Styles */
+/* This container holds the list of all questions shown at the end */
+.results-summary {
+    margin-top: 30px;
+    text-align: left;
+    max-height: 400px;
+    /* Limit height so it doesn't take up too much space */
+    overflow-y: auto;
+    /* Add a scrollbar if the list is too long */
+    padding-right: 10px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 20px;
+}
+
+/* Each question in the summary list */
+.summary-item {
+    background-color: #f8fafc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Header for each summary item (Question # and Correct/Incorrect) */
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.summary-header.correct {
+    color: var(--success-color);
+}
+
+.summary-header.wrong {
+    color: var(--error-color);
+}
+
+.summary-question {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.summary-details {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+
+.summary-details p {
+    margin-bottom: 4px;
+}
+
+/* The explanation text shown in the summary */
+.summary-explanation {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e2e8f0;
+    font-style: italic;
+}
+
+/* Animation to make things fade in smoothly */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+footer {
+    width: 100%;
+    margin-top: auto;
+    text-align: center;
+    color: var(--secondary-color);
+    font-size: 0.75rem;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
