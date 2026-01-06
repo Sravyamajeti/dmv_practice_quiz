@@ -14,7 +14,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from mangum import Mangum
 
 # Initialize Supabase client
 url: str = os.environ.get("SUPABASE_URL")
@@ -56,7 +55,6 @@ def get_question_by_id(question_id: str):
         return None
 
 app = FastAPI()
-handler = Mangum(app)
 
 # Configure CORS
 app.add_middleware(
