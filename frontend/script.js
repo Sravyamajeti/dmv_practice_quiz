@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let userAnswers = []; // Stores the user's answers and the question details for the summary.
     let currentQuestionIndex = 0; // Keeps track of which question we are currently on (0 is the first one).
     let score = 0; // Keeps track of the user's score.
-    let isAnswered = false; // Prevents the user from answering the same question multiple times.
+    let currentSelection = null; // Tracks the currently selected answer key
+    let currentQuestion = null; // Tracks the current question object
 
     // We attach "click" event listeners to the buttons.
     // When a button is clicked, the specified function (startQuiz, nextQuestion) runs.
@@ -75,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // This function fetches and displays the current question.
     async function showQuestion() {
-        isAnswered = false;
+        currentSelection = null;
         navigationArea.classList.add('hidden'); // Hide "Next" button until they answer
 
         // Show loading state or clear previous question
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/question/${questionId}`);
             if (!response.ok) throw new Error('Failed to fetch question details');
             const question = await response.json();
+            currentQuestion = question;
 
             // Update the text on the screen with the current question's data.
             questionText.textContent = question.question;
@@ -120,29 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // This function handles what happens when a user clicks an answer.
     function handleAnswer(selectedKey, selectedBtn, question) {
-        if (isAnswered) return; // If already answered, do nothing.
-        isAnswered = true;
+        currentSelection = selectedKey;
 
-        const isCorrect = selectedKey === question.correctAnswer;
-
-        // Disable all buttons so they can't change their answer.
+        // Update visual selection
         const allBtns = optionsContainer.querySelectorAll('.option-btn');
-        allBtns.forEach(btn => btn.disabled = true);
-
-        // Visually select the chosen answer (but don't show if it's right or wrong yet).
-        selectedBtn.classList.add('selected');
-        // We only show the "selected" state, not green/red.
-
-        // Record the result
-        if (isCorrect) {
-            score++;
-        }
-
-        // Save the details for the final summary so we can show them later
-        userAnswers.push({
-            question: question,
-            selectedKey: selectedKey,
-            isCorrect: isCorrect
+        allBtns.forEach(btn => {
+            btn.classList.remove('selected');
+            if (btn.dataset.key === selectedKey) {
+                btn.classList.add('selected');
+            }
         });
 
         // Show the "Next" button.
@@ -151,6 +139,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // This function moves to the next question.
     async function nextQuestion() {
+        if (!currentSelection || !currentQuestion) return;
+
+        const isCorrect = currentSelection === currentQuestion.correctAnswer;
+
+        if (isCorrect) {
+            score++;
+        }
+
+        userAnswers.push({
+            question: currentQuestion,
+            selectedKey: currentSelection,
+            isCorrect: isCorrect
+        });
+
         currentQuestionIndex++;
 
         // If there are more questions, show the next one.
